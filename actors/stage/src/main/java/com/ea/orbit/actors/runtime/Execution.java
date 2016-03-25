@@ -159,21 +159,22 @@ public class Execution extends AbstractExecution implements Startable
             final ObjectInvoker invoker = DefaultDescriptorFactory.get().getInvoker(target.getObject().getClass());
 
             final ActorTaskContext context = ActorTaskContext.current();
-            if (invocation.getHeaders() != null && invocation.getHeaders().size() > 0 && runtime.getStickyHeaders() != null)
-            {
-                for (Map.Entry e : invocation.getHeaders().entrySet())
-                {
-                    if (runtime.getStickyHeaders().contains(e.getKey()))
-                    {
-                        context.setProperty(String.valueOf(e.getKey()), e.getValue());
-                    }
-                }
-            }
-            // todo: it would be nice to separate this last part into another handler (InvocationHandler)
-            // to be able intercept the invocation right before it actually happens, good for logging and metrics
 
             if (context != null)
             {
+                if (invocation.getHeaders() != null && invocation.getHeaders().size() > 0 && runtime.getStickyHeaders() != null)
+                {
+                    for (Map.Entry e : invocation.getHeaders().entrySet())
+                    {
+                        if (runtime.getStickyHeaders().contains(e.getKey()))
+                        {
+                            context.setProperty(String.valueOf(e.getKey()), e.getValue());
+                        }
+                    }
+                }
+                // todo: it would be nice to separate this last part into another handler (InvocationHandler)
+                // to be able intercept the invocation right before it actually happens, good for logging and metrics
+
                 context.setRuntime(runtime);
             }
             else
